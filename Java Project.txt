@@ -1,0 +1,83 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class PasswordGeneratorGUI extends JFrame implements ActionListener {
+    private JLabel passwordLabel;
+    private JButton generateButton;
+    private JCheckBox uppercaseBox, lowercaseBox, numbersBox, symbolsBox;
+    private JTextField lengthField;
+
+    public PasswordGeneratorGUI() {
+        super("Password Generator");
+
+        // Create UI elements
+        passwordLabel = new JLabel("Your generated password will appear here.");
+        passwordLabel.setHorizontalAlignment(JLabel.CENTER);
+        generateButton = new JButton("Generate");
+        generateButton.addActionListener(this);
+        uppercaseBox = new JCheckBox("Uppercase letters");
+        lowercaseBox = new JCheckBox("Lowercase letters");
+        numbersBox = new JCheckBox("Numbers");
+        symbolsBox = new JCheckBox("Symbols");
+        lengthField = new JTextField("8");
+
+        // Create UI layout
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(6, 1));
+        panel.add(uppercaseBox);
+        panel.add(lowercaseBox);
+        panel.add(numbersBox);
+        panel.add(symbolsBox);
+        panel.add(new JLabel("Length:"));
+        panel.add(lengthField);
+        add(panel, BorderLayout.NORTH);
+        add(passwordLabel, BorderLayout.CENTER);
+        add(generateButton, BorderLayout.SOUTH);
+
+        // Set window properties
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 500);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new PasswordGeneratorGUI();
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == generateButton) {
+            boolean useUppercase = uppercaseBox.isSelected();
+            boolean useLowercase = lowercaseBox.isSelected();
+            boolean useNumbers = numbersBox.isSelected();
+            boolean useSymbols = symbolsBox.isSelected();
+            int length = Integer.parseInt(lengthField.getText());
+
+            // Generate password
+            String password = generatePassword(useUppercase, useLowercase, useNumbers, useSymbols, length);
+            passwordLabel.setText(password);
+        }
+    }
+
+    private String generatePassword(boolean useUppercase, boolean useLowercase, boolean useNumbers, boolean useSymbols, int length) {
+        String uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+        String numberChars = "0123456789";
+        String symbolChars = "!@#$%^&*()_+-=[]{}\\|;:'\",.<>/?";
+        String allChars = "";
+        if (useUppercase) allChars += uppercaseChars;
+        if (useLowercase) allChars += lowercaseChars;
+        if (useNumbers) allChars += numberChars;
+        if (useSymbols) allChars += symbolChars;
+
+        StringBuilder password = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int index = (int) (Math.random() * allChars.length());
+            password.append(allChars.charAt(index));
+        }
+        return password.toString();
+    }
+}
+
+
